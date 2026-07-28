@@ -1,27 +1,27 @@
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
 
-from app.limiter import limiter
+from app.core.limiter import limiter
+from app.db.database import Base, engine
+from app.routers.auth import router
 
-from app.database import Base, engine
-from app.auth import router
-
-# Create database tables
+# Create database tables on startup
 Base.metadata.create_all(bind=engine)
 
-# Create FastAPI app
 app = FastAPI(
-    title="Simple Authentication System"
+    title="Authentication System API",
+    description="JWT + Google OAuth authentication backend",
+    version="1.0.0",
 )
 
-# Allowed frontend origins
 origins = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
-# Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -29,21 +29,14 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# connect limiter with FastAPI
+
+
 app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-
-# handle limit error
-app.add_exception_handler(
-    RateLimitExceeded,
-    _rate_limit_exceeded_handler
-)
-
-# Register routes
 app.include_router(router)
 
-@app.get("/")
-def home():
-    return {
-        "message": "Authentication API"
-    }
+
+@app.get("/", tags=["Health"])
+def health_check():
+    return {"status": "ok", "message": "Authentication API is running"}
