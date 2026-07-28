@@ -20,7 +20,6 @@ def register(user: UserCreate, db: Session = Depends(get_db)):
         )
 
     new_user = User(
-        username=user.username,
         email=user.email,
         password=user.password
     )
