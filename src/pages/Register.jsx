@@ -31,19 +31,18 @@ export default function Register() {
     setLoading(true);
 
     try {
-      const response = await api.post("/auth/register", {
-        email,
-        password,
-      });
+  const response = await api.post("/auth/register", {
+      email,
+      password,
+    });
 
-      // If your backend returns a JWT token after registration
-      if (response.data.access_token) {
-        localStorage.setItem("token", response.data.access_token);
-        navigate("/dashboard");
-      } else {
-        // If registration only creates the account
-        navigate("/login");
-      }
+    localStorage.setItem(
+      "token",
+      response.data.access_token
+    );
+
+    navigate("/dashboard");
+      
     } catch (err) {
       setError(
         err.response?.data?.detail ||
