@@ -7,7 +7,6 @@ export default function Register() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [strength, setStrength] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -15,13 +14,6 @@ export default function Register() {
     const value = e.target.value;
     setPassword(value);
 
-    if (value.length < 6) {
-      setStrength("Weak");
-    } else if (value.length < 10) {
-      setStrength("Medium");
-    } else {
-      setStrength("Strong");
-    }
   };
 
   const handleRegister = async (e) => {
@@ -93,22 +85,6 @@ export default function Register() {
             className="w-full mt-1 p-2 border rounded focus:ring-blue-500 focus:border-blue-500"
           />
 
-          {password && (
-            <p className="text-xs mt-1 text-gray-500">
-              Strength:{" "}
-              <span
-                className={`font-bold ${
-                  strength === "Strong"
-                    ? "text-green-600"
-                    : strength === "Medium"
-                    ? "text-yellow-600"
-                    : "text-red-600"
-                }`}
-              >
-                {strength}
-              </span>
-            </p>
-          )}
         </div>
 
         <button

@@ -4,8 +4,12 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models import User
 from app.schemas import UserCreate, UserLogin, UserResponse
-from app.security import hash_password, verify_password, create_access_token
-
+from app.security import (
+    hash_password,
+    validate_password,
+    verify_password,
+    create_access_token
+)
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 
@@ -13,6 +17,13 @@ router = APIRouter(prefix="/auth", tags=["Authentication"])
 def register(user: UserCreate, db: Session = Depends(get_db)):
 
     email = db.query(User).filter(User.email == user.email).first()
+    is_valid, errors = validate_password(user.password)
+    
+    if not is_valid:
+        raise HTTPException(
+            status_code=400,
+            detail=errors
+        )   
 
     if email:
         raise HTTPException(
