@@ -43,6 +43,27 @@ def create_access_token(data: dict):
     )
 
     return token
+def create_refresh_token(data: dict):
+
+    to_encode = data.copy()
+
+    expire = datetime.utcnow() + timedelta(
+        days=int(os.getenv("REFRESH_TOKEN_EXPIRE_DAYS",7))
+    )
+
+    to_encode.update({
+        "exp": expire,
+        "type": "refresh"
+    })
+
+
+    token = jwt.encode(
+        to_encode,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
+    return token
 def validate_password(password: str):
 
     errors = []

@@ -1,6 +1,5 @@
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String, DateTime
 from app.database import Base
-
 
 class User(Base):
     __tablename__ = "users"
@@ -10,3 +9,12 @@ class User(Base):
     email = Column(String, unique=True)
 
     password = Column(String)
+    failed_login_attempts = Column(
+        Integer,
+        default=0
+    )
+
+    locked_until = Column(
+        DateTime,
+        nullable=True
+    )
