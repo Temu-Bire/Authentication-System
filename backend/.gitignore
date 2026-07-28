@@ -1,0 +1,41 @@
+# Python bytecode cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Environment variables & secrets (CRITICAL for security)
+.env
+.env.*
+!.env.example
+secrets.toml
+
+# Databases (SQLite local files)
+*.db
+*.sqlite3
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Testing and Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+
+# OS-generated files
+.DS_Store
+Thumbs.db
+
+# Build and distributions
+build/
+dist/
+*.egg-info/
