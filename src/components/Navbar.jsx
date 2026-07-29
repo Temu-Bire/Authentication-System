@@ -5,12 +5,14 @@ export default function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("access_token");
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
     navigate("/login");
   };
+
 
   return (
     <nav className="bg-white shadow px-6 py-4 flex justify-between items-center">

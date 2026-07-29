@@ -56,82 +56,59 @@ export default function Login() {
       navigate("/dashboard");
 
 
-    }catch(err){
-
-      setError(
-        err.response?.data?.detail ||
-        "Invalid email or password."
-      );
-
-
-    }finally{
-
+    } catch (err) {
+      if (err.response?.status === 429) {
+        setError("Rate limit exceeded. Too many requests, please wait 1 minute before trying again.");
+      } else {
+        const detail = err.response?.data?.detail;
+        if (typeof detail === "string") {
+          setError(detail);
+        } else if (Array.isArray(detail)) {
+          setError(detail.map((d) => d.msg || d).join(", "));
+        } else {
+          setError("Invalid email or password.");
+        }
+      }
+    } finally {
       setLoading(false);
-
     }
-
   };
-
-
 
   // Google login
-
-  const handleGoogleLogin = async(response)=>{
-
-
-    try{
-
+  const handleGoogleLogin = async (response) => {
+    try {
       const googleToken = response.credential;
+      const result = await api.post("/auth/google-login", {
+        token: googleToken,
+      });
 
-
-      const result = await api.post(
-        "/auth/google-login",
-        {
-          token: googleToken
-        }
-      );
-
-
-      localStorage.setItem(
-        "access_token",
-        result.data.access_token
-      );
-
+      localStorage.setItem("access_token", result.data.access_token);
+      if (result.data.refresh_token) {
+        localStorage.setItem("refresh_token", result.data.refresh_token);
+      }
 
       navigate("/dashboard");
-
-
-    }catch(err){
-
-      setError(
-        "Google login failed"
-      );
-
+    } catch (err) {
+      setError("Google login failed");
     }
-
   };
 
-
-
   return (
-
     <div className="max-w-md mx-auto bg-white p-8 rounded-lg shadow">
+      <h2 className="text-2xl font-bold mb-6 text-center">Sign In</h2>
 
+      {error && (
+        <div
+          className={`mb-4 p-3 rounded text-sm text-center font-medium ${
+            error.includes("locked") || error.includes("Rate limit")
+              ? "bg-amber-100 text-amber-900 border border-amber-300"
+              : "bg-red-50 text-red-600 border border-red-200"
+          }`}
+        >
+          {error}
+        </div>
+      )}
 
-      <h2 className="text-2xl font-bold mb-6 text-center">
-        Sign In
-      </h2>
-
-
-      {
-        error && (
-
-          <p className="mb-4 text-red-500 text-center">
-            {error}
-          </p>
-
-        )
-      }
 
 
 

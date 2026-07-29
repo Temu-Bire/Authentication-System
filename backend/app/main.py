@@ -5,11 +5,12 @@ from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
 
 from app.core.limiter import limiter
-from app.db.database import Base, engine
+from app.db.database import init_db
 from app.routers.auth import router
 
-# Create database tables on startup
-Base.metadata.create_all(bind=engine)
+# Create database tables & apply schema updates on startup
+init_db()
+
 
 app = FastAPI(
     title="Authentication System API",
