@@ -6,7 +6,13 @@ from app.schemas.user import (
     UserResponse,
     SessionResponse,
 )
-from app.schemas.auth import GoogleToken
+from app.schemas.auth import (
+    GoogleToken,
+    PasswordChangeRequest,
+    ForgotPasswordRequest,
+    ResetPasswordRequest,
+    AuditLogResponse,
+)
 from app.schemas.token import TokenResponse, TokenPairResponse
 
 __all__ = [
@@ -16,6 +22,10 @@ __all__ = [
     "UserResponse",
     "SessionResponse",
     "GoogleToken",
+    "PasswordChangeRequest",
+    "ForgotPasswordRequest",
+    "ResetPasswordRequest",
+    "AuditLogResponse",
     "TokenResponse",
     "TokenPairResponse",
 ]

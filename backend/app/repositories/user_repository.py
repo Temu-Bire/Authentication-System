@@ -1,8 +1,10 @@
-"""User and Session database queries repository."""
+"""User, Session, AuditLog, and PasswordReset database queries repository."""
 from datetime import datetime
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from app.models.user import User, Session as UserSession
+from app.models.audit_log import AuditLog
+from app.models.password_reset import PasswordResetToken
 
 
 class UserRepository:
@@ -25,6 +27,12 @@ class UserRepository:
         db.commit()
         db.refresh(user)
         return user
+
+    @staticmethod
+    def update_password(db: Session, user: User, new_hashed_password: str) -> None:
+        user.password = new_hashed_password
+        db.commit()
+        db.refresh(user)
 
     @staticmethod
     def create_session(
@@ -99,3 +107,75 @@ class UserRepository:
             .first()
             is not None
         )
+
+    # -----------------------------------------------------------------------
+    # Audit Logs
+    # -----------------------------------------------------------------------
+    @staticmethod
+    def record_audit_log(
+        db: Session,
+        user_id: int,
+        event_type: str,
+        ip_address: Optional[str] = None,
+        device: Optional[str] = None,
+    ) -> AuditLog:
+        log_entry = AuditLog(
+            user_id=user_id,
+            event_type=event_type,
+            ip_address=ip_address,
+            device=device,
+            created_at=datetime.utcnow(),
+        )
+        db.add(log_entry)
+        db.commit()
+        db.refresh(log_entry)
+        return log_entry
+
+    @staticmethod
+    def get_audit_logs(db: Session, user_id: int, limit: int = 15) -> List[AuditLog]:
+        return (
+            db.query(AuditLog)
+            .filter(AuditLog.user_id == user_id)
+            .order_by(AuditLog.created_at.desc())
+            .limit(limit)
+            .all()
+        )
+
+    # -----------------------------------------------------------------------
+    # Password Reset Tokens
+    # -----------------------------------------------------------------------
+    @staticmethod
+    def create_password_reset_token(
+        db: Session,
+        user_id: int,
+        token_hash: str,
+        expires_at: datetime,
+    ) -> PasswordResetToken:
+        reset_record = PasswordResetToken(
+            user_id=user_id,
+            token_hash=token_hash,
+            expires_at=expires_at,
+            used=False,
+            created_at=datetime.utcnow(),
+        )
+        db.add(reset_record)
+        db.commit()
+        db.refresh(reset_record)
+        return reset_record
+
+    @staticmethod
+    def get_valid_reset_token(db: Session, token_hash: str) -> Optional[PasswordResetToken]:
+        return (
+            db.query(PasswordResetToken)
+            .filter(
+                PasswordResetToken.token_hash == token_hash,
+                PasswordResetToken.used == False,
+                PasswordResetToken.expires_at > datetime.utcnow(),
+            )
+            .first()
+        )
+
+    @staticmethod
+    def mark_reset_token_used(db: Session, reset_record: PasswordResetToken) -> None:
+        reset_record.used = True
+        db.commit()
