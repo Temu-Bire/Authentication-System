@@ -1,27 +1,71 @@
-# Authentication System
+# NexusAuth - Full-Stack Authentication & Security Suite
 
-A full-stack authentication system built with **FastAPI** (Python backend) and **React + Vite + Tailwind CSS** (frontend), featuring JWT authentication, Google OAuth integration, session management, and rate limiting.
+An enterprise-ready authentication system built with **FastAPI** (Python backend) and **React + Vite + Tailwind CSS** (frontend), featuring high-trust cyber-glassmorphism design, JWT token pairs, Google OAuth 2.0, active session isolation, password recovery, in-app password management, and security audit logs.
 
 ---
 
-## Project Structure
+## Project Architecture
 
 ```text
 Authentication-System/
-├── backend/                  # FastAPI backend service
-│   ├── app/                  # Application code (routes, db, core, schemas, utils)
-│   ├── requirements.txt      # Python dependencies
-│   ├── .env.example          # Backend environment variables template
-│   └── .gitignore
-├── frontend/                 # React + Vite frontend application
-│   ├── public/               # Static assets & icons
-│   ├── src/                  # React source files (components, pages, api, routes)
-│   ├── package.json          # Node.js dependencies & scripts
-│   ├── vite.config.js        # Vite configuration
-│   ├── .env.example          # Frontend environment variables template
-│   └── .gitignore
+├── backend/                       # FastAPI modular backend
+│   ├── app/
+│   │   ├── main.py                # Entrypoint & v1 API router mounting
+│   │   ├── core/                  # Security (direct bcrypt), JWT, config, exceptions, logging
+│   │   ├── db/                    # SQLAlchemy engine, Base, and session dependencies
+│   │   ├── models/                # User, Session, Role, AuditLog, PasswordResetToken
+│   │   ├── schemas/               # Pydantic request/response schemas
+│   │   ├── dependencies/          # Authentication & Authorization guards
+│   │   ├── services/              # Business logic (AuthService, UserService, OAuthService)
+│   │   ├── repositories/          # Data access layer (UserRepository, OAuthRepository)
+│   │   ├── routers/               # HTTP endpoints (auth, users, admin)
+│   │   ├── utils/                 # Password complexity validator & email helper
+│   │   └── middleware/            # SlowAPI rate limiting
+│   ├── migrations/                # Alembic database migrations
+│   ├── tests/                     # Unit and integration test suites
+│   ├── requirements.txt           # Python dependencies
+│   └── alembic.ini
+│
+├── frontend/                      # React 19 + Vite frontend application
+│   ├── src/
+│   │   ├── context/               # AuthContext & useAuth() reactive state hook
+│   │   ├── components/            # Navbar, custom SVG iconography (Icons.jsx)
+│   │   ├── pages/                 # Login, Register, ForgotPassword, ResetPassword, Dashboard, Sessions
+│   │   ├── routes/                # ProtectedRoute wrapper
+│   │   └── api/                   # Axios interceptor with token refresh exchange
+│   ├── index.html                 # Vite HTML entry point
+│   ├── package.json
+│   └── vite.config.js
+│
+├── .gitignore
 └── README.md
 ```
+
+---
+
+## Key Features
+
+- **High-Trust Dark Glassmorphic UI**: Ambient mesh gradient, glowing accents, leading input icons, and custom SVG iconography.
+- **Interactive Password Controls**: Visibility toggles (show/hide), dynamic 4-segment strength meters, and live requirement checklists.
+- **Centralized State Management**: Powered by React `AuthContext` and custom `useAuth()` hook for instant cross-component updates.
+- **Security Command Center (Dashboard)**:
+  - Account Security Score progress ring.
+  - Profile identity overview (email, authentication provider, IP).
+  - In-app **Password Change** section with old password verification.
+  - **Security Activity Timeline** fed from real-time audit logs.
+- **Active Session Management**:
+  - Automatically parses client devices (e.g., *Chrome on Windows*, *Safari on iPhone*).
+  - Current device radar pulse indicator.
+  - Suspicious login alert banner for unverified IP addresses.
+  - Granular single session and bulk remote session termination with confirmation.
+- **Password Recovery Flow**:
+  - Request recovery instructions via `POST /auth/forgot-password`.
+  - Set new password with cryptographic token via `POST /auth/reset-password` (automatically revokes remote sessions).
+- **Hardened Security & Rate Limiting**:
+  - Direct `bcrypt` password salting and hashing.
+  - Brute-force account lockout after 5 failed attempts for 15 minutes.
+  - SlowAPI rate limits on `/auth/login`, `/auth/register`, and `/auth/refresh`.
+  - Secured endpoints: `/users` and `/auth/activity` protected with Bearer token authentication.
 
 ---
 
@@ -50,18 +94,18 @@ Authentication-System/
    pip install -r requirements.txt
    ```
 
-4. Configure environment variables:
-   - Copy `.env.example` to `.env` inside `backend/`:
-     ```bash
-     cp .env.example .env
-     ```
-   - Update `SECRET_KEY`, `DATABASE_URL`, and `GOOGLE_CLIENT_ID` with your settings.
+4. Configure environment variables (`.env`):
+   ```bash
+   cp .env.example .env
+   ```
+   Configure `SECRET_KEY`, `DATABASE_URL`, and `GOOGLE_CLIENT_ID`.
 
-5. Start the backend server:
+5. Start the backend development server:
    ```bash
    uvicorn app.main:app --reload --port 8000
    ```
-   The backend API will be available at `http://127.0.0.1:8000`. API docs can be viewed at `http://127.0.0.1:8000/docs`.
+   - API endpoints: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+   - Interactive Swagger docs: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 ---
 
@@ -77,26 +121,14 @@ Authentication-System/
    npm install
    ```
 
-3. Configure environment variables:
-   - Check `.env` or copy `.env.example` to `.env`:
-     ```bash
-     cp .env.example .env
-     ```
-   - Verify `VITE_GOOGLE_CLIENT_ID` and `VITE_API_URL` (defaults to `http://127.0.0.1:8000`).
+3. Verify environment variables in `.env`:
+   ```env
+   VITE_API_URL=http://127.0.0.1:8000
+   VITE_GOOGLE_CLIENT_ID=your-google-client-id
+   ```
 
-4. Run the frontend development server:
+4. Start the frontend development server:
    ```bash
    npm run dev
    ```
-   The frontend will be running at `http://localhost:5173`.
-
----
-
-## Features
-
-- **JWT Authentication**: Secure access tokens and refresh tokens.
-- **Google OAuth**: Fast single sign-on with Google Sign-In.
-- **Session Tracking**: View and revoke active user sessions.
-- **Rate Limiting**: Protect authentication endpoints against abuse using SlowAPI.
-- **Protected Routes**: Client-side route protection with token validation.
-- **Tailwind CSS Styling**: Clean and modern user interface.
+   The application will be live at [http://localhost:5173](http://localhost:5173).
