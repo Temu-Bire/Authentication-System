@@ -2,64 +2,115 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 
-import Navbar from "./components/Navbar";
+// Guest Screens 1-7
+import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import TwoFactorVerify from "./pages/TwoFactorVerify";
 import ForgotPassword from "./pages/ForgotPassword";
 import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
+
+// Authenticated App Screens 8-12
 import Dashboard from "./pages/Dashboard";
+import SecuritySettings from "./pages/SecuritySettings";
 import Sessions from "./pages/Sessions";
+import PrivacySettings from "./pages/PrivacySettings";
+import AccountSettings from "./pages/AccountSettings";
+import Notifications from "./pages/Notifications";
+
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100">
-          <Navbar />
+        <div className="min-h-screen bg-[#f8fafc] text-slate-800 antialiased font-sans">
+          <Routes>
+            {/* Screen 1: Landing Page (Guest) */}
+            <Route path="/" element={<Landing />} />
 
-          <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
-            <Routes>
-              <Route path="/" element={<Navigate to="/login" replace />} />
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password" element={<ResetPassword />} />
+            {/* Screen 2: Login Page */}
+            <Route path="/login" element={<Login />} />
 
-              <Route
-                path="/dashboard"
-                element={
-                  <ProtectedRoute>
-                    <Dashboard />
-                  </ProtectedRoute>
-                }
-              />
+            {/* Screen 3: Sign Up Page */}
+            <Route path="/register" element={<Register />} />
 
-              <Route
-                path="/sessions"
-                element={
-                  <ProtectedRoute>
-                    <Sessions />
-                  </ProtectedRoute>
-                }
-              />
+            {/* Screen 4: 2FA Verification */}
+            <Route path="/2fa" element={<TwoFactorVerify />} />
 
-              <Route path="*" element={<Navigate to="/login" replace />} />
-            </Routes>
-          </main>
+            {/* Screen 5: Forgot Password */}
+            <Route path="/forgot-password" element={<ForgotPassword />} />
 
-          <footer className="border-t border-slate-900/80 py-6 text-center text-xs text-slate-400">
-            <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-              <p>© 2026 NexusAuth Security Suite. Zero-knowledge end-to-end protection.</p>
-              <div className="flex items-center gap-4 text-[11px] text-slate-400">
-                <span>AES-256</span>
-                <span>•</span>
-                <span>JWT Refresh Rotation</span>
-                <span>•</span>
-                <span>Multi-Session Shield</span>
-              </div>
-            </div>
-          </footer>
+            {/* Screen 6: Reset Password */}
+            <Route path="/reset-password" element={<ResetPassword />} />
+
+            {/* Screen 7: Verify Email */}
+            <Route path="/verify-email" element={<VerifyEmail />} />
+
+            {/* Screen 8: Dashboard (After Login) */}
+            <Route
+              path="/dashboard"
+              element={
+                <ProtectedRoute>
+                  <Dashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Screen 9: Security Settings */}
+            <Route
+              path="/security"
+              element={
+                <ProtectedRoute>
+                  <SecuritySettings />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Screen 10: Session Management */}
+            <Route
+              path="/sessions"
+              element={
+                <ProtectedRoute>
+                  <Sessions />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Screen 11: Privacy Settings */}
+            <Route
+              path="/privacy"
+              element={
+                <ProtectedRoute>
+                  <PrivacySettings />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Screen 12: Account Settings */}
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <AccountSettings />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Additional App View: Notifications */}
+            <Route
+              path="/notifications"
+              element={
+                <ProtectedRoute>
+                  <Notifications />
+                </ProtectedRoute>
+              }
+            />
+
+            {/* Fallback */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </div>
       </BrowserRouter>
     </AuthProvider>
