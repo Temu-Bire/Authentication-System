@@ -1,5 +1,7 @@
+import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from uvicorn.middleware.proxy_headers import ProxyHeadersMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
 
@@ -12,15 +14,29 @@ from app.middleware.rate_limit import limiter
 init_db()
 
 app = FastAPI(
-    title="Authentication System API",
-    description="JWT + Google OAuth authentication backend with session management",
+    title="NexusAuth API",
+    description="JWT + Google OAuth 2.0 authentication backend with session management",
     version="1.0.0",
+    docs_url="/docs",
+    redoc_url="/redoc",
 )
 
-origins = [
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-]
+# Trust reverse proxy headers (X-Forwarded-For, X-Forwarded-Proto) in production
+app.add_middleware(ProxyHeadersMiddleware, trusted_hosts="*")
+
+# Dynamic CORS Configuration from Environment
+cors_origins_env = os.getenv("CORS_ORIGINS", "")
+if cors_origins_env.strip():
+    origins = [o.strip() for o in cors_origins_env.split(",") if o.strip()]
+else:
+    origins = [
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://localhost:3000",
+        "http://127.0.0.1:3000",
+        "http://localhost",
+        "http://127.0.0.1",
+    ]
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,5 +55,19 @@ app.include_router(api_v1_router, prefix="/api/v1")
 
 
 @app.get("/", tags=["Health"])
+def root_check():
+    return {
+        "status": "ok",
+        "service": "NexusAuth API",
+        "version": "1.0.0",
+        "docs": "/docs",
+    }
+
+
+@app.get("/health", tags=["Health"])
 def health_check():
-    return {"status": "ok", "message": "Authentication API is running"}
+    return {
+        "status": "healthy",
+        "service": "NexusAuth API",
+        "version": "1.0.0",
+    }
