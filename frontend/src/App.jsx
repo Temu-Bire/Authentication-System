@@ -1,6 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import TopMasterHeader from "./components/TopMasterHeader";
 
 // Guest Screens 1-7
 import Landing from "./pages/Landing";
@@ -25,92 +26,97 @@ export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="min-h-screen bg-[#f8fafc] text-slate-800 antialiased font-sans">
-          <Routes>
-            {/* Screen 1: Landing Page (Guest) */}
-            <Route path="/" element={<Landing />} />
+        <div className="min-h-screen bg-[#f8fafc] text-slate-800 antialiased font-sans flex flex-col">
+          {/* Master Infographic Header with Purple Shield, Subtitle, and 4 Feature Badges */}
+          <TopMasterHeader />
 
-            {/* Screen 2: Login Page */}
-            <Route path="/login" element={<Login />} />
+          <div className="flex-1 flex flex-col">
+            <Routes>
+              {/* Screen 1: Landing Page (Guest) */}
+              <Route path="/" element={<Landing />} />
 
-            {/* Screen 3: Sign Up Page */}
-            <Route path="/register" element={<Register />} />
+              {/* Screen 2: Login Page */}
+              <Route path="/login" element={<Login />} />
 
-            {/* Screen 4: 2FA Verification */}
-            <Route path="/2fa" element={<TwoFactorVerify />} />
+              {/* Screen 3: Sign Up Page */}
+              <Route path="/register" element={<Register />} />
 
-            {/* Screen 5: Forgot Password */}
-            <Route path="/forgot-password" element={<ForgotPassword />} />
+              {/* Screen 4: 2FA Verification */}
+              <Route path="/2fa" element={<TwoFactorVerify />} />
 
-            {/* Screen 6: Reset Password */}
-            <Route path="/reset-password" element={<ResetPassword />} />
+              {/* Screen 5: Forgot Password */}
+              <Route path="/forgot-password" element={<ForgotPassword />} />
 
-            {/* Screen 7: Verify Email */}
-            <Route path="/verify-email" element={<VerifyEmail />} />
+              {/* Screen 6: Reset Password */}
+              <Route path="/reset-password" element={<ResetPassword />} />
 
-            {/* Screen 8: Dashboard (After Login) */}
-            <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <Dashboard />
-                </ProtectedRoute>
-              }
-            />
+              {/* Screen 7: Verify Email */}
+              <Route path="/verify-email" element={<VerifyEmail />} />
 
-            {/* Screen 9: Security Settings */}
-            <Route
-              path="/security"
-              element={
-                <ProtectedRoute>
-                  <SecuritySettings />
-                </ProtectedRoute>
-              }
-            />
+              {/* Screen 8: Dashboard (After Login) */}
+              <Route
+                path="/dashboard"
+                element={
+                  <ProtectedRoute>
+                    <Dashboard />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Screen 10: Session Management */}
-            <Route
-              path="/sessions"
-              element={
-                <ProtectedRoute>
-                  <Sessions />
-                </ProtectedRoute>
-              }
-            />
+              {/* Screen 9: Security Settings */}
+              <Route
+                path="/security"
+                element={
+                  <ProtectedRoute>
+                    <SecuritySettings />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Screen 11: Privacy Settings */}
-            <Route
-              path="/privacy"
-              element={
-                <ProtectedRoute>
-                  <PrivacySettings />
-                </ProtectedRoute>
-              }
-            />
+              {/* Screen 10: Session Management */}
+              <Route
+                path="/sessions"
+                element={
+                  <ProtectedRoute>
+                    <Sessions />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Screen 12: Account Settings */}
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <AccountSettings />
-                </ProtectedRoute>
-              }
-            />
+              {/* Screen 11: Privacy Settings */}
+              <Route
+                path="/privacy"
+                element={
+                  <ProtectedRoute>
+                    <PrivacySettings />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Additional App View: Notifications */}
-            <Route
-              path="/notifications"
-              element={
-                <ProtectedRoute>
-                  <Notifications />
-                </ProtectedRoute>
-              }
-            />
+              {/* Screen 12: Account Settings */}
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <AccountSettings />
+                  </ProtectedRoute>
+                }
+              />
 
-            {/* Fallback */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
+              {/* Additional App View: Notifications */}
+              <Route
+                path="/notifications"
+                element={
+                  <ProtectedRoute>
+                    <Notifications />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Fallback */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </div>
         </div>
       </BrowserRouter>
     </AuthProvider>

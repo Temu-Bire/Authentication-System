@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import GuestNavbar, { TopBadgesBar } from "../components/GuestNavbar";
+import GuestNavbar from "../components/GuestNavbar";
 import { PaperPlaneMailArtwork } from "../components/AuthProIcons";
 import api from "../api/axios";
 
@@ -31,10 +31,9 @@ export default function ForgotPassword() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans">
-      <TopBadgesBar />
       <GuestNavbar />
 
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
         {/* Screen 5: Forgot Password Card */}
         <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200/80 shadow-lg shadow-slate-200/40 p-8 sm:p-10 text-center">
           {/* Paper Plane Mail Illustration */}

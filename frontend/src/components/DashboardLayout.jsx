@@ -189,7 +189,7 @@ export default function DashboardLayout({ children, title, subtitle }) {
       {/* Main Wrapper */}
       <div className="flex-1 flex flex-col min-w-0">
         {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-slate-200/80 px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30">
+        <header className="h-16 bg-white border-b border-slate-200/80 px-6 sm:px-10 lg:px-12 flex items-center justify-between sticky top-0 z-30">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setMobileMenuOpen(true)}
@@ -271,7 +271,7 @@ export default function DashboardLayout({ children, title, subtitle }) {
         </header>
 
         {/* Page Content Body */}
-        <main className="flex-1 p-4 sm:p-8 max-w-7xl mx-auto w-full">
+        <main className="flex-1 px-6 sm:px-10 lg:px-12 py-8 sm:py-10 max-w-7xl mx-auto w-full">
           {children}
         </main>
       </div>

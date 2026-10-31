@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import GuestNavbar, { TopBadgesBar } from "../components/GuestNavbar";
+import GuestNavbar from "../components/GuestNavbar";
 import { EmailVerificationArtwork } from "../components/AuthProIcons";
 import { useAuth } from "../context/AuthContext";
 
@@ -32,10 +32,9 @@ export default function VerifyEmail() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans">
-      <TopBadgesBar />
       <GuestNavbar />
 
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
         {/* Screen 7: Verify Email Card */}
         <div className="w-full max-w-md bg-white rounded-3xl border border-slate-200/80 shadow-lg shadow-slate-200/40 p-8 sm:p-10 text-center">
           {/* Email Envelope with Green Check Badge */}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import GuestNavbar, { TopBadgesBar } from "../components/GuestNavbar";
+import GuestNavbar from "../components/GuestNavbar";
 import { AuthProLogo, GoogleGIcon, GitHubIcon } from "../components/AuthProIcons";
 
 export default function Login() {
@@ -41,10 +41,9 @@ export default function Login() {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] text-slate-800 flex flex-col font-sans">
-      <TopBadgesBar />
       <GuestNavbar />
 
-      <main className="flex-1 flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <main className="flex-1 flex items-center justify-center px-4 sm:px-8 lg:px-12 py-8 sm:py-12">
         {/* Split Card Container (Screen 2: Login Page) */}
         <div className="w-full max-w-4xl bg-white rounded-3xl border border-slate-200/80 shadow-lg shadow-slate-200/50 overflow-hidden grid grid-cols-1 md:grid-cols-12 min-h-[580px]">
           {/* Left Column: Benefits Banner */}
