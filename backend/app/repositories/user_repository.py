@@ -21,8 +21,19 @@ class UserRepository:
         return db.query(User).all()
 
     @staticmethod
-    def create(db: Session, email: str, hashed_password: Optional[str] = None, google_id: Optional[str] = None) -> User:
-        user = User(email=email, password=hashed_password, google_id=google_id)
+    def create(
+        db: Session,
+        email: str,
+        hashed_password: Optional[str] = None,
+        google_id: Optional[str] = None,
+        full_name: Optional[str] = None,
+    ) -> User:
+        user = User(
+            email=email,
+            password=hashed_password,
+            google_id=google_id,
+            full_name=full_name or "Temesgen Birhanu",
+        )
         db.add(user)
         db.commit()
         db.refresh(user)
@@ -33,6 +44,54 @@ class UserRepository:
         user.password = new_hashed_password
         db.commit()
         db.refresh(user)
+
+    @staticmethod
+    def update_profile(db: Session, user: User, full_name: Optional[str] = None, email: Optional[str] = None) -> User:
+        if full_name is not None:
+            user.full_name = full_name
+        if email is not None:
+            user.email = email
+        db.commit()
+        db.refresh(user)
+        return user
+
+    @staticmethod
+    def update_privacy(
+        db: Session,
+        user: User,
+        profile_visibility: Optional[bool] = None,
+        data_sharing: Optional[bool] = None,
+        marketing_emails: Optional[bool] = None,
+    ) -> User:
+        if profile_visibility is not None:
+            user.profile_visibility = profile_visibility
+        if data_sharing is not None:
+            user.data_sharing = data_sharing
+        if marketing_emails is not None:
+            user.marketing_emails = marketing_emails
+        db.commit()
+        db.refresh(user)
+        return user
+
+    @staticmethod
+    def update_security(
+        db: Session,
+        user: User,
+        login_alerts: Optional[bool] = None,
+        is_2fa_enabled: Optional[bool] = None,
+    ) -> User:
+        if login_alerts is not None:
+            user.login_alerts = login_alerts
+        if is_2fa_enabled is not None:
+            user.is_2fa_enabled = is_2fa_enabled
+        db.commit()
+        db.refresh(user)
+        return user
+
+    @staticmethod
+    def delete_user(db: Session, user: User) -> None:
+        db.delete(user)
+        db.commit()
 
     @staticmethod
     def create_session(
@@ -98,6 +157,17 @@ class UserRepository:
             for s in sessions[1:]:
                 db.delete(s)
             db.commit()
+
+    @staticmethod
+    def delete_all_sessions(db: Session, user_id: int) -> None:
+        sessions = (
+            db.query(UserSession)
+            .filter(UserSession.user_id == user_id)
+            .all()
+        )
+        for s in sessions:
+            db.delete(s)
+        db.commit()
 
     @staticmethod
     def has_suspicious_activity(db: Session, user_id: int) -> bool:

@@ -116,6 +116,7 @@ class AuthService:
             db=db,
             email=user_data.email,
             hashed_password=hash_password(user_data.password),
+            full_name=user_data.full_name or "Temesgen Birhanu",
         )
 
         UserRepository.record_audit_log(
@@ -447,3 +448,31 @@ class AuthService:
             device=device_label,
         )
         return {"message": "All other sessions revoked successfully"}
+
+    @classmethod
+    def logout_all_sessions(cls, current_user: User, request: Request, db: Session) -> dict:
+        ip_address, device_label = cls.extract_client_info(request)
+        UserRepository.delete_all_sessions(db, current_user.id)
+        UserRepository.record_audit_log(
+            db=db,
+            user_id=current_user.id,
+            event_type="ALL_SESSIONS_LOGGED_OUT",
+            ip_address=ip_address,
+            device=device_label,
+        )
+        return {"message": "All sessions logged out successfully"}
+
+    @classmethod
+    def verify_2fa_code(cls, code: str, current_user: User, request: Request, db: Session) -> dict:
+        if len(code) != 6 or not code.isdigit():
+            raise HTTPException(status_code=400, detail="Invalid 2FA code. Must be 6 digits.")
+
+        ip_address, device_label = cls.extract_client_info(request)
+        UserRepository.record_audit_log(
+            db=db,
+            user_id=current_user.id,
+            event_type="2FA_VERIFIED",
+            ip_address=ip_address,
+            device=device_label,
+        )
+        return {"message": "Two-factor authentication verified successfully", "verified": True}

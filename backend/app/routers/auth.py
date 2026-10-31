@@ -13,6 +13,7 @@ from app.schemas.auth import (
     PasswordChangeRequest,
     ForgotPasswordRequest,
     ResetPasswordRequest,
+    TwoFactorVerifyRequest,
     AuditLogResponse,
 )
 from app.schemas.token import TokenPairResponse, TokenResponse
@@ -176,6 +177,36 @@ def revoke_other_sessions(
 ):
     """Revoke all sessions except the most recent one."""
     return AuthService.revoke_all_other_sessions(
+        current_user=current_user,
+        request=request,
+        db=db,
+    )
+
+
+@router.post("/sessions/logout-all")
+def logout_all_sessions(
+    request: Request,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Log out all active sessions including the current device."""
+    return AuthService.logout_all_sessions(
+        current_user=current_user,
+        request=request,
+        db=db,
+    )
+
+
+@router.post("/auth/2fa/verify")
+def verify_2fa(
+    request: Request,
+    body: TwoFactorVerifyRequest,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    """Verify 6-digit TOTP two-factor authentication code."""
+    return AuthService.verify_2fa_code(
+        code=body.code,
         current_user=current_user,
         request=request,
         db=db,

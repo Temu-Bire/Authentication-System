@@ -26,6 +26,11 @@ class ResetPasswordRequest(BaseModel):
     new_password: str
 
 
+class TwoFactorVerifyRequest(BaseModel):
+    """Body schema for 2FA 6-digit code verification."""
+    code: str
+
+
 class AuditLogResponse(BaseModel):
     """Schema for returning security activity logs."""
     id: int

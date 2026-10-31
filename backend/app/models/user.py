@@ -10,11 +10,22 @@ class User(Base):
     __tablename__ = "users"
 
     id = Column(Integer, primary_key=True, index=True)
+    full_name = Column(String, nullable=True, default="Temesgen Birhanu")
     email = Column(String, unique=True, nullable=False)
     password = Column(String, nullable=True)  # nullable for Google-only accounts
     failed_login_attempts = Column(Integer, default=0)
     locked_until = Column(DateTime, nullable=True)
     google_id = Column(String, unique=True, nullable=True)
+
+    # 2FA and Security Settings
+    is_2fa_enabled = Column(Boolean, default=False)
+    two_factor_secret = Column(String, nullable=True)
+    login_alerts = Column(Boolean, default=True)
+
+    # Privacy Settings
+    profile_visibility = Column(Boolean, default=True)
+    data_sharing = Column(Boolean, default=False)
+    marketing_emails = Column(Boolean, default=False)
 
     # Suspicious login detection
     last_login_ip = Column(String, nullable=True)
