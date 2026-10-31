@@ -23,7 +23,6 @@ export function AuthProvider({ children }) {
       setUser(res.data);
     } catch (err) {
       console.error("Failed to fetch user profile", err);
-      // If profile request failed due to bad token, clear tokens
       if (err.response?.status === 401) {
         localStorage.removeItem("access_token");
         localStorage.removeItem("refresh_token");
@@ -42,8 +41,13 @@ export function AuthProvider({ children }) {
     return res.data;
   };
 
-  const register = async (email, password) => {
-    const res = await api.post("/auth/register", { email, password });
+  const register = async (email, password, fullName) => {
+    const payload = {
+      email,
+      password,
+      full_name: fullName || "Temesgen Birhanu",
+    };
+    const res = await api.post("/auth/register", payload);
     localStorage.setItem("access_token", res.data.access_token);
     localStorage.setItem("refresh_token", res.data.refresh_token);
     await fetchUserProfile();
@@ -75,6 +79,43 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const updateProfile = async (profileData) => {
+    const res = await api.patch("/users/me/profile", profileData);
+    setUser(res.data);
+    return res.data;
+  };
+
+  const updatePrivacy = async (privacyData) => {
+    const res = await api.patch("/users/me/privacy", privacyData);
+    setUser(res.data);
+    return res.data;
+  };
+
+  const updateSecurity = async (securityData) => {
+    const res = await api.patch("/users/me/security", securityData);
+    setUser(res.data);
+    return res.data;
+  };
+
+  const logoutAllSessions = async () => {
+    try {
+      await api.post("/sessions/logout-all");
+    } catch (err) {
+      console.error("Logout all sessions error", err);
+    } finally {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      setUser(null);
+    }
+  };
+
+  const deleteAccount = async () => {
+    await api.delete("/users/me");
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("refresh_token");
+    setUser(null);
+  };
+
   const value = {
     user,
     setUser,
@@ -85,6 +126,11 @@ export function AuthProvider({ children }) {
     googleLogin,
     logout,
     refreshUser: fetchUserProfile,
+    updateProfile,
+    updatePrivacy,
+    updateSecurity,
+    logoutAllSessions,
+    deleteAccount,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
