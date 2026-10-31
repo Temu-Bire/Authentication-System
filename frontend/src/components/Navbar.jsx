@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import api from "../api/axios";
 
 export default function Navbar() {
   const location = useLocation();
@@ -7,12 +8,20 @@ export default function Navbar() {
 
   const token = localStorage.getItem("access_token");
 
-  const handleLogout = () => {
-    localStorage.removeItem("access_token");
-    localStorage.removeItem("refresh_token");
-    navigate("/login");
+  const handleLogout = async () => {
+    const refreshToken = localStorage.getItem("refresh_token");
+    try {
+      if (refreshToken) {
+        await api.post("/auth/logout", { refresh_token: refreshToken });
+      }
+    } catch (err) {
+      console.error("Failed to revoke session on server", err);
+    } finally {
+      localStorage.removeItem("access_token");
+      localStorage.removeItem("refresh_token");
+      navigate("/login");
+    }
   };
-
 
   return (
     <nav className="bg-white shadow px-6 py-4 flex justify-between items-center">
