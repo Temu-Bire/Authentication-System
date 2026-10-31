@@ -1,4 +1,4 @@
-from slowapi import Limiter
-from slowapi.util import get_remote_address
+"""Backward compatibility re-export of limiter."""
+from app.middleware.rate_limit import limiter
 
-limiter = Limiter(key_func=get_remote_address)
+__all__ = ["limiter"]
