@@ -4,20 +4,6 @@ import { Link, useLocation } from "react-router-dom";
 export default function TopMasterHeader() {
   const location = useLocation();
 
-  const screens = [
-    { num: 1, name: "Landing Page (Guest)", path: "/" },
-    { num: 2, name: "Login Page", path: "/login" },
-    { num: 3, name: "Sign Up Page", path: "/register" },
-    { num: 4, name: "2FA Verification", path: "/2fa" },
-    { num: 5, name: "Forgot Password", path: "/forgot-password" },
-    { num: 6, name: "Reset Password", path: "/reset-password" },
-    { num: 7, name: "Email Verification", path: "/verify-email" },
-    { num: 8, name: "Dashboard (After Login)", path: "/dashboard" },
-    { num: 9, name: "Security Settings", path: "/security" },
-    { num: 10, name: "Session Management", path: "/sessions" },
-    { num: 11, name: "Privacy Settings", path: "/privacy" },
-    { num: 12, name: "Account Settings", path: "/settings" },
-  ];
 
   return (
     <div className="w-full bg-[#f1f5f9] border-b border-slate-200/80 select-none">
@@ -106,30 +92,6 @@ export default function TopMasterHeader() {
         </div>
       </div>
 
-      {/* 12 Screens Navigator Bar */}
-      <div className="bg-white/90 border-t border-slate-200/70 overflow-x-auto scrollbar-none">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-2 flex items-center gap-2 text-xs whitespace-nowrap">
-          <span className="font-bold text-slate-400 uppercase tracking-wider text-[10px] mr-1">
-            Screens:
-          </span>
-          {screens.map((s) => {
-            const isActive = location.pathname === s.path;
-            return (
-              <Link
-                key={s.num}
-                to={s.path}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all ${
-                  isActive
-                    ? "bg-indigo-600 text-white shadow-xs"
-                    : "bg-slate-100 hover:bg-slate-200/80 text-slate-600"
-                }`}
-              >
-                {s.num}. {s.name}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
     </div>
   );
 }
